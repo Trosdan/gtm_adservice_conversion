@@ -68,6 +68,7 @@ const log = require('logToConsole');
 const queryPermission = require('queryPermission');
 const sendPixel = require('sendPixel');
 const getCookieValues = require('getCookieValues');
+const encodeUriComponent = require('encodeUriComponent');
 const cookieName = 'coid';
 const url = 'https://online.adservicemedia.dk/cgi-bin/tracklead.pl';
 let coid;
@@ -85,7 +86,7 @@ if (coid) params += "&coid="+coid;
 
 // sendPixel
 if (queryPermission('send_pixel', url)) {
-  sendPixel(url+params);
+  sendPixel(url+encodeUriComponent(params));
 }
 
 // Call data.gtmOnSuccess when the tag is finished.
