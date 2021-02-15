@@ -32,20 +32,6 @@ ___TEMPLATE_PARAMETERS___
 [
   {
     "type": "TEXT",
-    "name": "camp_id",
-    "displayName": "Campaign ID",
-    "simpleValueType": true,
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      },
-      {
-        "type": "NUMBER"
-      }
-    ]
-  },
-  {
-    "type": "TEXT",
     "name": "pricevariable",
     "displayName": "Price Variable",
     "simpleValueType": true,
@@ -62,31 +48,30 @@ ___TEMPLATE_PARAMETERS___
 
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
-
 // Enter your template code here.
 const log = require('logToConsole');
 const queryPermission = require('queryPermission');
 const sendPixel = require('sendPixel');
 const getCookieValues = require('getCookieValues');
 const encodeUriComponent = require('encodeUriComponent');
-const cookieName = 'coid';
-const url = 'https://online.adservicemedia.dk/cgi-bin/tracklead.pl';
-let coid;
+const cookieName = 'asclid';
+const url = 'https://www.aservice.cloud/trc/mastertag/conv';
+let asclid;
+let params;
+// Get ASCLID
 
-// Get COID
 if (queryPermission('get_cookies', cookieName)) {
-  coid = getCookieValues(cookieName);
+  asclid = getCookieValues(cookieName);
 }
 
 // Build query
-var params = '?camp_id='+data.camp_id;
+if (asclid) params = "?asclid="+asclid;
 if (data.pricevariable) params += "&pricevariable="+data.pricevariable;
 if (data.order_id) params += "&order_id="+data.order_id;
-if (coid) params += "&coid="+coid;
 
 // sendPixel
-if (queryPermission('send_pixel', url)) {
-  sendPixel(url+encodeUriComponent(params));
+if (queryPermission('send_pixel', url) && asclid) {
+  sendPixel(url+params);
 }
 
 // Call data.gtmOnSuccess when the tag is finished.
@@ -131,7 +116,7 @@ ___WEB_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "coid"
+                "string": "asclid"
               }
             ]
           }
@@ -157,7 +142,7 @@ ___WEB_PERMISSIONS___
             "listItem": [
               {
                 "type": 1,
-                "string": "https://online.adservicemedia.dk/*"
+                "string": "https://www.aservice.cloud/trc/mastertag/*"
               }
             ]
           }
@@ -179,6 +164,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 15/02/2021, 16:02:23 AM
+Created on 3/12/2020, 11:02:23 AM
 
 
